@@ -36,7 +36,7 @@ function VideoStreaming() {
                     <div className="video-control">
                         <Grid container direction="row" alignItems="center" justifyContent="space-between">
                             <Grid item>
-                                <p>Ranjha</p>
+                                <p style={{color:"white"}} >Ranjha</p>
                             </Grid>
                             <Grid item>
                             <IconButton
@@ -44,11 +44,11 @@ function VideoStreaming() {
                                 aria-controls="long-menu"
                                 aria-haspopup="true"
                                 onClick={handleClick}
+                                // color="primary"
+                                style={{color:"white"}}
                             >
-                            </IconButton> 
-                                <MoreVertIcon />                                
-                           
-
+                                <MoreVertIcon color="white" />   
+                            </IconButton>                                                                                         
                             <Menu
                                 id="long-menu"
                                 anchorEl={anchorEl}
