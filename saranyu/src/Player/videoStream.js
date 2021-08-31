@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import ReactPlayer from 'react-player'
 import {Container, Grid, IconButton, Menu, MenuItem} from '@material-ui/core';
-// import MoreVertIcon from '@material-ui/icons/MoreVert';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 const option = ["Configuration", "Settings", "Login"];
 const ITEM_HEIGHT = 48;
@@ -45,8 +45,10 @@ function VideoStreaming() {
                                 aria-haspopup="true"
                                 onClick={handleClick}
                             >
-                                {/* <MoreVertIcon /> */}                                
-                            </IconButton>
+                            </IconButton> 
+                                <MoreVertIcon />                                
+                           
+
                             <Menu
                                 id="long-menu"
                                 anchorEl={anchorEl}
