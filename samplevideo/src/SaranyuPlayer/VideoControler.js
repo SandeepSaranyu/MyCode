@@ -1,7 +1,11 @@
 import React, {useState, useEffect} from 'react'
-import { Forward10, Forward30, Fullscreen, PauseCircleFilledOutlined, PlayCircleFilledOutlined, Replay10, Replay30, VolumeMuteTwoTone, VolumeUpTwoTone } from '@material-ui/icons'
+import { Forward10, Fullscreen, Menu, More, MoreVert,MoreVertIcon, PauseCircleFilledOutlined, PlayCircleFilledOutlined, Replay10, Replay30, VolumeMuteTwoTone, VolumeUpTwoTone } from '@material-ui/icons'
 import { HHMMSS } from '../commonFunction/comman'
-import { Tooltip } from '@material-ui/core'
+import { IconButton, MenuItem } from '@material-ui/core'
+import LongMenu from '../SaranyuPlayer/more'
+
+
+const ITEM_HEIGHT = 48;
 
 function VideoControler({play, onPlayPause,
                         mute, onMute,
@@ -11,14 +15,17 @@ function VideoControler({play, onPlayPause,
                         }) {
        
         const [stateValue, setStateValue] = useState({playC: play, currentTimeC: currentTime, lengthC: length, 
-                                            progressTime: null, updateTime: currentTime })
-        // console.log(play)
-                
+                                            progressTime: null, updateTime: currentTime, imgseek: "", seekTool:"" })
+        
+        const {currentTimeC, progressTime, lengthC,seekTool, updateTime, progress, playC} = stateValue;
+        // const [anchorEl, setAnchorEl] = useState(true);
+        // const open = Boolean(anchorEl);
+
         const handleDuration = () =>{
             let duration = document.getElementById("sp").duration;                    
             duration = duration.toFixed();               
             let progress = HHMMSS(duration);   
-            console.log(progress)     
+            // console.log(progress)     
             setStateValue({ ...stateValue,
                 lengthC : duration,
                 progressTime : progress
@@ -31,13 +38,13 @@ function VideoControler({play, onPlayPause,
             current = current.toFixed();                        
             
             let currentFormat = HHMMSS(current)
-            console.log(currentFormat)
-           await setStateValue({...stateValue, updateTime: currentFormat, currentTimeC: current });
+            // console.log(currentFormat)
+           await setStateValue({...stateValue, updateTime: currentFormat, currentTimeC: current, imgseek: currentFormat });
             // console.log(stateValue.updateTime)
             // if(parseInt(state.currentTimeC) === parseInt(state.lengthC)){
             //     setState({...state, play: true});
             // }
-            console.log(updateTime)
+            // console.log(updateTime)
             return [current, currentFormat]
         }
 
@@ -74,7 +81,7 @@ function VideoControler({play, onPlayPause,
             // if(playC){
                 setInterval(() => {
                 let time = handleCurrentTime()
-                console.log(time[1])
+                // console.log(time[1])
                 handleDuration()
                         // setStateValue({...stateValue, currentTimeC: handleCurrentTime(), lengthC: handleDuration() })
                     }, 1000);
@@ -111,11 +118,12 @@ function VideoControler({play, onPlayPause,
                     (event.nativeEvent.offsetX / event.nativeEvent.target.clientWidth) *
                         parseInt(event.target.getAttribute('max'), 10)
                     );
-                    // console.log(HHMMSS(skipTo))
+                    // console.log(skipTo)
                     seektool.textContent = HHMMSS(skipTo)
                     let video = videoid.getBoundingClientRect()
                     seektool.style.left = `${event.pageX - video.left}px`
                     img.style.left = `${event.pageX - video.left}px`
+                    setStateValue({...stateValue, seekTool: HHMMSS(skipTo)})
 
                 //   console.log(document.getElementById('seek').event.target.dataset.setAttribute("data-seek", skipTo))
                 //   document.getElementById('seek').event.target.dataset.setAttribute('data-seek', skipTo)
@@ -126,7 +134,24 @@ function VideoControler({play, onPlayPause,
             }
           }
         
-        const {currentTimeC, progressTime, lengthC, updateTime, progress, playC} = stateValue;
+        //   const [anchorEl, setAnchorEl] = React.useState(null);
+        //   const open = Boolean(anchorEl);
+        
+        //   const handleClick = (event) => {
+        //     setAnchorEl(event.currentTarget);
+        //   };
+        
+        //   const handleClose = () => {
+        //     setAnchorEl(null);
+        //   };
+        
+        const handleMenuItemClicks = (e, i) =>{
+            console.log(e)
+            console.log(i)
+            let videos = document.getElementById("sp");
+            i === 0 ? videos.playbackRate = 0.5 : i === 1 ? videos.playbackRate = 1.0 : 
+            i === 1.5 ? videos.playbackRate = 1.5 : videos.playbackRate = 3.0
+        }
     return (
         <div className="control-container">            
             <div className="center-control">
@@ -165,38 +190,106 @@ function VideoControler({play, onPlayPause,
                         />                    
                         <div className="seek-tooltip" id="seek-tooltip">00:00:00</div>
                         
-                        <img className="seek-img" id="img" onMouseMoveCapture={updateSeekTooltip} src="https://www.saranyu.in/assets/images/slides/tab-slide2.png" width = "100" />                        
-                    </div>
-                    
-                <span onClick={onPlayPause} className="icon-style">
-                    {play?
-                        <PlayCircleFilledOutlined  id="icon" />
-                    :
-                        <PauseCircleFilledOutlined id="icon" />    
-                    }                
-                </span>
-                <span onClick={onMute} className="icon-style">
-                    {mute?
-                        <VolumeMuteTwoTone id="icon" />
+                        {/* <img className="seek-img" id="img" onMouseMoveCapture={updateSeekTooltip} 
+                        src="https://www.saranyu.in/assets/images/slides/tab-slide2.png" width = "100" />                         */}
+                                                
+                        {seekTool === "00:00:00"?
+                        <img className="seek-img" id="img" onMouseMoveCapture={updateSeekTooltip} 
+                        src="https://www.saranyu.in/assets/images/slides/tab-slide2.png" width = "100" />                        
                         :
-                        <VolumeUpTwoTone id="icon" />
+                        seekTool === "00:00:30"?
+                        <img className="seek-img" id="img" onMouseMoveCapture={updateSeekTooltip} 
+                        src="https://www.saranyu.in/assets/images/logos/zee5.png" width = "100" />
+                        :
+                        <img className="seek-img" id="img" onMouseMoveCapture={updateSeekTooltip} 
+                        src="https://www.saranyu.in/assets/images/logos/shemaroo_logo.svg" width = "100" />
                         }
-                </span>
-                <span >
-                    <input className="volume_range" type = "range" value= {volume} step={0.1} min={0} max={1} onChange={onVolume} /> 
-                </span>                
-                <span>
-                    <p style={{color:"white"}}>
-                        {progressTime}/{HHMMSS(currentTimeC)}
-                    </p>
-                </span>
-{/* 
-                <span onClick={handleFullScreen} className="icon-style">
-                    <Fullscreen id="icon"/>
-                </span> */}
+                    </div>
+                <div style={{display:"flex", justifyContent:"space-between"}}>
+                    <div style={{display:"flex", justifyContent:"space-between"}}>
+                        <span onClick={onPlayPause} className="icon-style">
+                            {play?
+                                <PlayCircleFilledOutlined  id="icon" />
+                            :
+                                <PauseCircleFilledOutlined id="icon" />    
+                            }                
+                        </span>
+                        <span onClick={onMute} className="icon-style">
+                            {mute?
+                                <VolumeMuteTwoTone id="icon" />
+                                :
+                                <VolumeUpTwoTone id="icon" />
+                                }
+                        </span>
+                        <span >
+                            <input className="volume_range" type = "range" value= {volume} step={0.1} min={0} max={1} onChange={onVolume} /> 
+                        </span>                
+                        <span>
+                            <p style={{color:"white"}}>
+                                {progressTime}/{updateTime}
+                            </p>
+                        </span>
+                    </div>
+                    <div>
+                        {/* <LongMenu onIndex={handleMenuItemClicks} /> */}
+
+                    {/* <IconButton
+                        aria-label="more"
+                        aria-controls="long-menu"
+                        aria-haspopup="true"
+                        onClick={handleClick}
+                    >
+                        <MoreVert style={{color:"white"}}/>
+                    </IconButton>
+                    <Menu
+                        id="long-menu"
+                        anchorEl={anchorEl}
+                        keepMounted
+                        open={open}
+                        onClose={handleClose}
+                        PaperProps={{
+                        style: {
+                            maxHeight: ITEM_HEIGHT * 4.5,
+                            width: '20ch',
+                        },
+                        }}
+                    >
+                        {options.map((option) => (
+                        <MenuItem key={option} selected={option === 'Pyxis'} onClick={handleClose}>
+                            {option}
+                        </MenuItem>
+                        ))}
+                    </Menu> */}
+                    </div>
+    {/* 
+                    <span onClick={handleFullScreen} className="icon-style">
+                        <Fullscreen id="icon"/>
+                    </span> */}
+
+                </div>
+                
             </div>
         </div>
     )
 }
+
+
+const options = [
+    'None',
+    'Atria',
+    'Callisto',
+    'Dione',
+    'Ganymede',
+    'Hangouts Call',
+    'Luna',
+    'Oberon',
+    'Phobos',
+    'Pyxis',
+    'Sedna',
+    'Titania',
+    'Triton',
+    'Umbriel',
+  ];
+  
 
 export default VideoControler
